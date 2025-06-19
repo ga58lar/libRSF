@@ -44,11 +44,20 @@ namespace libRSF
   class AngleLocalParameterization
   {
     public:
-
       template <typename T>
       bool operator()(const T* Angle, const T* DeltaAngle, T* AnglePlusDelta) const
       {
         *AnglePlusDelta = NormalizeAngle(*Angle + *DeltaAngle);
+        return true;
+      }
+      
+      template <typename T>
+      bool Plus(const T* x, const T* delta, T* x_plus_delta) const {
+        return (*this)(x, delta, x_plus_delta);
+      }
+      template <typename T>
+      bool Minus(const T* y, const T* x, T* y_minus_x) const {
+        *y_minus_x = NormalizeAngle(*y - *x);
         return true;
       }
 
@@ -62,16 +71,23 @@ namespace libRSF
   class UnitCircleLocalParameterization
   {
     public:
-
       template <typename T>
       bool operator()(const T* Circle, const T* DeltaCircle, T* CirclePlusDelta) const
       {
-        /** real part --> cos() */
         CirclePlusDelta[0] = Circle[0] * cos(DeltaCircle[0]) - Circle[1] * sin(DeltaCircle[0]);
-
-        /** complex part --> sin() */
         CirclePlusDelta[1] = Circle[1] * cos(DeltaCircle[0]) + Circle[0] * sin(DeltaCircle[0]);
+        return true;
+      }
 
+      template <typename T>
+      bool Plus(const T* x, const T* delta, T* x_plus_delta) const {
+        return (*this)(x, delta, x_plus_delta);
+      }
+      template <typename T>
+      bool Minus(const T* y, const T* x, T* y_minus_x) const {
+        T angle_y = atan2(y[1], y[0]);
+        T angle_x = atan2(x[1], x[0]);
+        y_minus_x[0] = NormalizeAngle(angle_y - angle_x);
         return true;
       }
 
@@ -85,7 +101,6 @@ namespace libRSF
   class QuaternionLocalParameterization
   {
     public:
-
       template <typename T>
       bool operator()(const T* Quaternion, const T* Delta, T* QuaternionPlusDelta) const
       {
@@ -96,12 +111,10 @@ namespace libRSF
         const T Norm = DeltaVec.norm();
         if (Norm > T(1e-20))
         {
-          /** using axis-angle definition */
           QPlusDelta = AngleAxisT<T> (Norm, DeltaVec / Norm) * Q;
         }
         else
         {
-          /** use linear approximation for small angles (for stable derivative) */
           QuaternionT<T> QuatDelta;
           QuatDelta.x() = 0.5 * DeltaVec(0);
           QuatDelta.y() = 0.5 * DeltaVec(1);
@@ -110,7 +123,22 @@ namespace libRSF
 
           QPlusDelta = QuatDelta * Q;
         }
+        return true;
+      }
 
+      template <typename T>
+      bool Plus(const T* x, const T* delta, T* x_plus_delta) const {
+        return (*this)(x, delta, x_plus_delta);
+      }
+      template <typename T>
+      bool Minus(const T* y, const T* x, T* y_minus_x) const {
+        Eigen::Map<const Eigen::Quaternion<T>> q_x(x);
+        Eigen::Map<const Eigen::Quaternion<T>> q_y(y);
+        Eigen::Quaternion<T> dq = q_y * q_x.conjugate();
+        Eigen::AngleAxis<T> aa(dq);
+        y_minus_x[0] = aa.axis()(0) * aa.angle();
+        y_minus_x[1] = aa.axis()(1) * aa.angle();
+        y_minus_x[2] = aa.axis()(2) * aa.angle();
         return true;
       }
 

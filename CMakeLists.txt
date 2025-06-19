@@ -42,10 +42,10 @@ option(LIBRSF_BUILD_TEST "If enabled, the tests get build." OFF)
 ##################################
 
 # path for custom find scripts
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
 # path for locally installed dependencies
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/externals/install)
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_CURRENT_LIST_DIR}/externals/install)
 
 # Eigen for vectorized calculations
 find_package(Eigen3 3.3.5 REQUIRED NO_MODULE)

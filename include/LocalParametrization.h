@@ -36,7 +36,7 @@
 #include "VectorMath.h"
 #include "Geometry.h"
 
-#include <ceres/local_parameterization.h>
+#include <ceres/ceres.h>
 
 namespace libRSF
 {
@@ -52,9 +52,9 @@ namespace libRSF
         return true;
       }
 
-      static ceres::LocalParameterization* Create()
+      static ceres::Manifold* Create()
       {
-        return (new ceres::AutoDiffLocalParameterization<AngleLocalParameterization, 1, 1>);
+        return (new ceres::AutoDiffManifold<AngleLocalParameterization, 1, 1>);
       }
   };
 
@@ -75,9 +75,9 @@ namespace libRSF
         return true;
       }
 
-      static ceres::LocalParameterization* Create()
+      static ceres::Manifold* Create()
       {
-        return (new ceres::AutoDiffLocalParameterization<UnitCircleLocalParameterization, 2, 1>);
+        return (new ceres::AutoDiffManifold<UnitCircleLocalParameterization, 2, 1>);
       }
   };
 
@@ -114,9 +114,9 @@ namespace libRSF
         return true;
       }
 
-      static ceres::LocalParameterization* Create()
+      static ceres::Manifold* Create()
       {
-        return (new ceres::AutoDiffLocalParameterization<QuaternionLocalParameterization, 4, 3>);
+        return (new ceres::AutoDiffManifold<QuaternionLocalParameterization, 4, 3>);
       }
   };
 }

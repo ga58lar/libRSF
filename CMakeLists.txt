@@ -62,6 +62,11 @@ find_package(Threads REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # geographic lib for coordinate frame conversions
+set(GeographicLib_ROOT "/usr/local")
+set(GeographicLib_DIR "/usr/local/lib/cmake/GeographicLib")
+set(GeographicLib_INCLUDE_DIRS "/usr/local/include")
+set(GeographicLib_LIBRARY_DIRS "/usr/local/lib")
+list(APPEND CMAKE_PREFIX_PATH "/usr/local")
 find_package(GeographicLib REQUIRED)
 
 # google test

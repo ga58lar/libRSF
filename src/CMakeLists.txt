@@ -99,9 +99,9 @@ set_target_properties(libRSF PROPERTIES POSITION_INDEPENDENT_CODE ON
 target_include_directories(libRSF
     PUBLIC
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../include/>
     PRIVATE
-        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/../src
 )
 
 # set target (libRSF) dependencies
@@ -124,7 +124,7 @@ install(TARGETS libRSF
 )
 
 # copy all header files
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include/libRSF)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/ DESTINATION include/libRSF)
 
 # export to script
 install(EXPORT librsf-targets
@@ -163,7 +163,7 @@ install(FILES
 
 if(NOT TARGET uninstall)
     configure_file(
-        "${PROJECT_SOURCE_DIR}/cmake/libRSFUninstall.cmake.in"
+        "${PROJECT_SOURCE_DIR}/../cmake/libRSFUninstall.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/libRSFUninstall.cmake"
         IMMEDIATE @ONLY)
 
